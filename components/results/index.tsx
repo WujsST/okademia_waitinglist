@@ -136,7 +136,7 @@ export function Results({ phase, niche, currentIncome, targetIncome, diagnosticA
             <NextPhase phase={phase} />
 
             {/* CTA Button */}
-            <div className="text-center py-12 space-y-4">
+            <div id="cta-section" className="text-center py-12 space-y-4">
               <p className="text-white/50 text-sm uppercase tracking-widest">Gotowy na wdrożenie?</p>
               <button
                 onClick={() => setModalOpen(true)}
@@ -165,6 +165,7 @@ export function Results({ phase, niche, currentIncome, targetIncome, diagnosticA
             {phase && (
               <CtaCard
                 phase={phase}
+                calendarUrl="https://calendar.app.google/TyhNDzmzZXNW3gneA"
                 onSuccess={() => setModalOpen(false)}
                 niche={niche}
                 currentIncome={currentIncome}

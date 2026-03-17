@@ -199,14 +199,30 @@ export function CtaCard({ phase, calendarUrl, onSuccess, niche, currentIncome, t
           </p>
 
           {calendarUrl && (
-            <a
-              href={calendarUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-full bg-white/8 border border-white/15 hover:bg-white/15 hover:border-white/30 text-white font-semibold px-8 py-4 text-base transition-all"
-            >
-              Zarezerwuj spotkanie →
-            </a>
+            <div className="space-y-4">
+              <p className="text-sm uppercase tracking-[0.2em] text-white/40 font-semibold">
+                Zarezerwuj rozmowę
+              </p>
+              <div className="rounded-2xl overflow-hidden border border-white/10 w-full" style={{ minHeight: 600 }}>
+                <iframe
+                  src={`${calendarUrl}?embed=true`}
+                  width="100%"
+                  height="600"
+                  frameBorder="0"
+                  scrolling="no"
+                  style={{ border: "none", background: "transparent" }}
+                  title="Zarezerwuj spotkanie"
+                />
+              </div>
+              <a
+                href={calendarUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white/70 transition-colors"
+              >
+                Otwórz w nowym oknie →
+              </a>
+            </div>
           )}
         </div>
       )}

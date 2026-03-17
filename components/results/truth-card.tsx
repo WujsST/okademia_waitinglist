@@ -33,6 +33,15 @@ export function TruthCard({ phase }: TruthCardProps) {
         </p>
         <p className="text-white/80 leading-relaxed text-sm sm:text-base">{phase.howToWinDetails}</p>
       </div>
+
+      <div className="relative z-10 pt-2">
+        <a
+          href="#cta-section"
+          className="inline-flex items-center gap-3 rounded-full bg-themeAccent text-white font-bold px-8 py-4 text-base hover:bg-blue-400 transition-all shadow-gold-glow"
+        >
+          Zostań naszym partnerem →
+        </a>
+      </div>
     </div>
   );
 }
