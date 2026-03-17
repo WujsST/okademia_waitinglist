@@ -7,9 +7,13 @@ import { Analytics } from "@vercel/analytics/react";
 const FigtreeFont = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next.js + Notion — Waitlist Template",
+  title: "The Brand GAMEPLAN — Odkryj swoją fazę wzrostu",
   description:
-    "A simple Next.js waitlist template with Notion as CMS and Resend to send emails created with React Email and Upstash Redis for rate limiting. Deployed on Vercel.",
+    "Sprawdź w której fazie jest Twój biznes i dowiedz się dokładnie co zrobić, żeby przejść do następnej.",
+  openGraph: {
+    title: "The Brand GAMEPLAN",
+    description: "Spersonalizowana diagnoza fazy Twojego biznesu",
+  },
 };
 
 export default function RootLayout({
