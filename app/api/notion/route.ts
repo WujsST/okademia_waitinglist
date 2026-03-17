@@ -1,8 +1,12 @@
 import { Client } from "@notionhq/client";
 import { NextResponse } from "next/server";
+import { PHASES } from "@/lib/phase-data";
 
 export async function POST(request: Request) {
   const body = await request.json();
+  const phase: number | undefined = body?.phase;
+  const phaseData = phase !== undefined ? PHASES.find((p) => p.id === phase) : undefined;
+
   try {
     const notion = new Client({ auth: process.env.NOTION_SECRET });
     const response = await notion.pages.create({
@@ -25,6 +29,13 @@ export async function POST(request: Request) {
             },
           ],
         },
+        ...(phase !== undefined && phaseData && {
+          Phase: {
+            select: {
+              name: `${phaseData.label} — ${phaseData.name}`,
+            },
+          },
+        }),
       },
     });
 
