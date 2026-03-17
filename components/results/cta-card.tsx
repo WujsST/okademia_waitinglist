@@ -6,11 +6,15 @@ import { PhaseData } from "@/lib/phase-data";
 
 interface CtaCardProps {
   phase: PhaseData;
-  bookingUrl?: string;
+  calendarUrl?: string;
+  onSuccess?: () => void;
 }
 
-export function CtaCard({ phase, bookingUrl = "https://calendly.com/dawid" }: CtaCardProps) {
-  const [name, setName] = useState("");
+export function CtaCard({ phase, calendarUrl, onSuccess }: CtaCardProps) {
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [companyUrl, setCompanyUrl] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -18,8 +22,8 @@ export function CtaCard({ phase, bookingUrl = "https://calendly.com/dawid" }: Ct
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
   const handleSubmit = async () => {
-    if (!name || !email) {
-      toast.error("Uzupełnij wszystkie pola");
+    if (!fullName || !companyName || !phone || !email) {
+      toast.error("Uzupełnij wszystkie wymagane pola");
       return;
     }
     if (!isValidEmail(email)) {
@@ -29,16 +33,17 @@ export function CtaCard({ phase, bookingUrl = "https://calendly.com/dawid" }: Ct
 
     setLoading(true);
     try {
+      const payload = { fullName, companyName, companyUrl, phone, email, phase: phase.id };
       const [mailRes, notionRes] = await Promise.all([
         fetch("/api/mail", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ firstname: name, email, phase: phase.id }),
+          body: JSON.stringify(payload),
         }),
         fetch("/api/notion", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, phase: phase.id }),
+          body: JSON.stringify(payload),
         }),
       ]);
 
@@ -53,7 +58,7 @@ export function CtaCard({ phase, bookingUrl = "https://calendly.com/dawid" }: Ct
       }
 
       setSubmitted(true);
-      toast.success("Gotowe! Sprawdź skrzynkę email.");
+      onSuccess?.();
     } catch {
       toast.error("Błąd sieci. Spróbuj ponownie.");
     } finally {
@@ -61,57 +66,128 @@ export function CtaCard({ phase, bookingUrl = "https://calendly.com/dawid" }: Ct
     }
   };
 
+  const inputClass =
+    "bg-transparent border-0 border-b border-white/25 focus:border-white/70 focus:outline-none text-white text-xl sm:text-2xl placeholder:text-white/20 pb-1 transition-colors w-full";
+
   return (
-    <div className="rounded-2xl border border-yellow-400/20 bg-yellow-400/5 p-8 space-y-6">
-      <div>
-        <p className="text-xs text-yellow-400/60 uppercase tracking-widest mb-2">Czas na wdrożenie</p>
-        <h3 className="text-xl font-bold">
-          {phase.implementationTime !== "Ciągły proces"
-            ? `Szacowany czas: ${phase.implementationTime}`
-            : "Jesteś gotowy na ciągły wzrost"}
-        </h3>
-        <p className="text-white/50 mt-2 text-sm">
-          Zostaw swoje dane — wyślę Ci spersonalizowany plan dla {phase.label}.
-        </p>
-      </div>
+    <div className="rounded-3xl bg-black border border-white/8 p-8 sm:p-12 space-y-10">
+      {/* Label */}
+      <p className="text-xs uppercase tracking-[0.25em] text-white/40 font-semibold flex items-center gap-2">
+        <span className="w-1 h-1 rounded-full bg-white/40" />
+        Kontakt
+      </p>
 
       {!submitted ? (
-        <div className="space-y-3">
-          <input
-            type="text"
-            placeholder="Twoje imię"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm placeholder:text-white/30 focus:outline-none focus:border-yellow-400/40 transition-colors"
-          />
-          <input
-            type="email"
-            placeholder="Twój email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm placeholder:text-white/30 focus:outline-none focus:border-yellow-400/40 transition-colors"
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full rounded-xl bg-yellow-400 text-black font-bold py-3 text-sm hover:bg-yellow-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Wysyłam..." : "Otrzymaj plan działania →"}
-          </button>
-        </div>
+        <>
+          {/* Headline */}
+          <h3 className="text-5xl sm:text-7xl font-extrabold tracking-tight text-white leading-none">
+            Porozmawiajmy
+          </h3>
+
+          {/* Sentence-style form */}
+          <div className="space-y-8 text-xl sm:text-2xl text-white/60 leading-relaxed">
+            {/* Row 1 */}
+            <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
+              <span>Nazywam się</span>
+              <div className="min-w-[220px] flex-1">
+                <input
+                  type="text"
+                  placeholder="imię i nazwisko"
+                  value={fullName}
+                  onChange={e => setFullName(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <span>z firmy</span>
+              <div className="min-w-[180px] flex-1">
+                <input
+                  type="text"
+                  placeholder="nazwa firmy"
+                  value={companyName}
+                  onChange={e => setCompanyName(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
+              <span>Strona firmy (opcjonalnie):</span>
+              <div className="min-w-[240px] flex-1">
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={companyUrl}
+                  onChange={e => setCompanyUrl(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
+              <span>Można się ze mną skontaktować pod</span>
+              <div className="min-w-[180px] flex-1">
+                <input
+                  type="tel"
+                  placeholder="numer telefonu"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            {/* Row 4 */}
+            <div className="flex flex-wrap items-end gap-x-3 gap-y-4">
+              <span>Mój email to</span>
+              <div className="min-w-[240px] flex-1">
+                <input
+                  type="email"
+                  placeholder="adres email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="space-y-4 pt-2">
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="flex items-center gap-3 rounded-full bg-white/8 border border-white/15 hover:bg-white/15 hover:border-white/30 text-white font-semibold px-8 py-4 text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <span className="text-lg">✦</span>
+              {loading ? "Wysyłam..." : "Wyślij"}
+            </button>
+            <p className="text-xs text-white/25 leading-relaxed max-w-sm">
+              Wysyłając formularz, wyrażasz zgodę na kontakt w celu obsługi zgłoszenia.
+            </p>
+          </div>
+        </>
       ) : (
-        <div className="space-y-4">
-          <p className="text-white/70 text-sm">
-            Email wysłany! Teraz umów bezpłatną konsultację żeby razem zaplanować wdrożenie.
+        /* Success state */
+        <div className="space-y-8">
+          <h3 className="text-5xl sm:text-7xl font-extrabold tracking-tight text-white leading-none">
+            Gotowe.
+          </h3>
+          <p className="text-xl text-white/55 leading-relaxed max-w-lg">
+            Otrzymaliśmy Twoje zgłoszenie. Odezwiemy się wkrótce, żeby umówić rozmowę.
           </p>
-          <a
-            href={bookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full rounded-xl border border-yellow-400/40 text-yellow-400 font-bold py-3 text-sm text-center hover:bg-yellow-400/10 transition-colors"
-          >
-            Umów spotkanie →
-          </a>
+
+          {calendarUrl && (
+            <a
+              href={calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 rounded-full bg-white/8 border border-white/15 hover:bg-white/15 hover:border-white/30 text-white font-semibold px-8 py-4 text-base transition-all"
+            >
+              Zarezerwuj spotkanie →
+            </a>
+          )}
         </div>
       )}
     </div>

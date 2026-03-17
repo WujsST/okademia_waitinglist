@@ -65,14 +65,14 @@ export default function Form({
           href="https://x.com/blakssh"
           rel="noopener noreferrer"
           target="_blank">
-          <FaXTwitter className="h-4 w-4 transition-all duration-200 ease-linear hover:text-yellow-200" />
+          <FaXTwitter className="h-4 w-4 transition-all duration-200 ease-linear hover:text-blue-200" />
         </Link>
         or
         <Link
           href="https://github.com/lakshaybhushan"
           rel="noopener noreferrer"
           target="_blank">
-          <FaGithub className="ml-0.5 h-5 w-5 transition-all duration-200 ease-linear hover:text-yellow-200" />
+          <FaGithub className="ml-0.5 h-5 w-5 transition-all duration-200 ease-linear hover:text-blue-200" />
         </Link>
       </motion.div>
     </motion.div>

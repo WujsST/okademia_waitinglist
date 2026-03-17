@@ -10,6 +10,9 @@ const config = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -19,6 +22,8 @@ const config = {
     },
     extend: {
       colors: {
+        themeBg: "#141414",
+        themeAccent: "#3A59D1",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -58,6 +63,10 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        "gold-glow": "0 0 20px rgba(58, 89, 209, 0.25)",
+        "gold-glow-strong": "0 0 30px rgba(58, 89, 209, 0.45)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -75,11 +84,34 @@ const config = {
             "background-position": "calc(100% + var(--shimmer-width)) 0",
           },
         },
+        "fade-in-up": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "pulse-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 15px rgba(58, 89, 209, 0.2)",
+          },
+          "50%": {
+            boxShadow: "0 0 25px rgba(58, 89, 209, 0.5)",
+          },
+        },
+        meteor: {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": {
+            transform: "rotate(215deg) translateX(-100vw)",
+            opacity: "0",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 8s infinite",
+        "fade-in-up": "fade-in-up 0.4s ease-out",
+        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "meteor-effect": "meteor 5s linear infinite",
       },
     },
   },

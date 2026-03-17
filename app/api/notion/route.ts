@@ -24,11 +24,29 @@ export async function POST(request: Request) {
             {
               type: "text",
               text: {
-                content: body?.name,
+                content: body?.fullName ?? body?.name ?? "",
               },
             },
           ],
         },
+        ...(body?.companyName && {
+          Company: {
+            type: "rich_text",
+            rich_text: [{ type: "text", text: { content: body.companyName } }],
+          },
+        }),
+        ...(body?.companyUrl && {
+          Website: {
+            type: "url",
+            url: body.companyUrl,
+          },
+        }),
+        ...(body?.phone && {
+          Phone: {
+            type: "phone_number",
+            phone_number: body.phone,
+          },
+        }),
         ...(phase !== undefined && phaseData && {
           Phase: {
             select: {

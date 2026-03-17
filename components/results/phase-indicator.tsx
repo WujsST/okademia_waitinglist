@@ -8,20 +8,20 @@ interface PhaseIndicatorProps {
 export function PhaseIndicator({ activePhase }: PhaseIndicatorProps) {
   return (
     <div className="w-full space-y-3">
-      <p className="text-sm text-white/40 uppercase tracking-widest">Jesteś tutaj</p>
+      <p className="text-base font-bold text-themeAccent uppercase tracking-widest text-center mt-6">Jesteś tutaj</p>
       <div className="flex items-center gap-1">
         {PHASES.map((phase) => (
           <div key={phase.id} className="flex-1 flex flex-col items-center gap-1.5">
             <div
               className={cn(
                 "h-1 w-full rounded-full transition-all duration-500",
-                phase.id <= activePhase ? "bg-yellow-400" : "bg-white/10"
+                phase.id <= activePhase ? "bg-themeAccent" : "bg-white/10"
               )}
             />
             <span
               className={cn(
                 "text-[10px] font-medium transition-colors duration-300 hidden sm:block",
-                phase.id === activePhase ? "text-yellow-400" : "text-white/30"
+                phase.id === activePhase ? "text-themeAccent" : "text-white/30"
               )}
             >
               {phase.id}
@@ -31,7 +31,7 @@ export function PhaseIndicator({ activePhase }: PhaseIndicatorProps) {
       </div>
       <div className="flex justify-between text-xs text-white/30">
         <span>Faza 0 — Zdecyduj</span>
-        <span className="font-semibold text-yellow-400">
+        <span className="font-semibold text-themeAccent">
           {PHASES[activePhase].label} — {PHASES[activePhase].name}
         </span>
         <span>Faza 7 — Rośnij</span>

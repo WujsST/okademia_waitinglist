@@ -14,9 +14,12 @@ import { PHASES } from "@/lib/phase-data";
 interface EmailProps {
   userFirstname: string;
   phase?: number;
+  companyName?: string;
+  companyUrl?: string;
+  phone?: string;
 }
 
-export const NotionWaitlistEmail = ({ userFirstname, phase }: EmailProps) => {
+export const NotionWaitlistEmail = ({ userFirstname, phase, companyName, companyUrl, phone }: EmailProps) => {
   const phaseData = phase !== undefined ? PHASES.find((p) => p.id === phase) : undefined;
 
   return (

@@ -1,10 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
 
-const FigtreeFont = Figtree({ subsets: ["latin"] });
+const OutfitFont = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "The Brand GAMEPLAN — Odkryj swoją fazę wzrostu",
@@ -39,7 +39,7 @@ export default function RootLayout({
       <meta name="twitter:image:type" content="image/png" />
       <meta name="twitter:image:width" content="1280" />
       <meta name="twitter:image:height" content="832" />
-      <body className={FigtreeFont.className}>
+      <body className={`${OutfitFont.variable} font-sans`}>
         {children}
         <Toaster richColors position="top-center" />
         <Analytics />

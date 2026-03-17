@@ -36,14 +36,24 @@ export async function POST(request: NextRequest, response: NextResponse) {
     );
   }
 
-  const { email, firstname, phase } = await request.json();
+  const { email, firstname, fullName, companyName, companyUrl, phone, phase } = await request.json();
+
+  const displayName = fullName ?? firstname ?? "there";
 
   const { data, error } = await resend.emails.send({
     from: "Lakshay<hello@waitlist.lakshb.dev>",
     to: [email],
     subject: "Thankyou for wailisting the Next.js + Notion CMS template!",
     reply_to: "lakshb.work@gmail.com",
-    html: await render(WelcomeTemplate({ userFirstname: firstname, phase })),
+    html: await render(
+      WelcomeTemplate({
+        userFirstname: displayName,
+        phase,
+        companyName,
+        companyUrl,
+        phone,
+      })
+    ),
   });
 
   // const { data, error } = { data: true, error: null }
