@@ -26,12 +26,12 @@ export const Meteors = ({
   if (meteors.length === 0) return null;
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {meteors.map((m, idx) => (
         <span
           key={"meteor" + idx}
           className={cn(
-            "animate-meteor-effect absolute top-0 w-0.5 h-0.5 rounded-[9999px] bg-themeAccent shadow-[0_0_0_1px_#ffffff10] rotate-[215deg]",
+            "animate-meteor-effect absolute -top-[50px] w-0.5 h-0.5 rounded-[9999px] bg-themeAccent shadow-[0_0_0_1px_#ffffff10] rotate-[215deg]",
             "before:content-[''] before:absolute before:top-1/2 before:transform before:-translate-y-[50%] before:w-[50px] before:h-[1px] before:bg-gradient-to-r before:from-themeAccent before:to-transparent",
             className
           )}
