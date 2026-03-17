@@ -162,7 +162,17 @@ export function Results({ phase, niche, currentIncome, targetIncome, diagnosticA
             >
               ✕
             </button>
-            {phase && <CtaCard phase={phase} onSuccess={() => setModalOpen(false)} />}
+            {phase && (
+              <CtaCard
+                phase={phase}
+                onSuccess={() => setModalOpen(false)}
+                niche={niche}
+                currentIncome={currentIncome}
+                targetIncome={targetIncome}
+                diagnosticAnswers={diagnosticAnswers}
+                budget={budget}
+              />
+            )}
           </div>
         </div>
       )}

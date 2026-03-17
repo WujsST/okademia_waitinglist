@@ -54,6 +54,52 @@ export async function POST(request: Request) {
             },
           },
         }),
+        ...(body?.niche && {
+          Niche: {
+            select: { name: body.niche },
+          },
+        }),
+        ...(body?.currentIncome && {
+          "Current Income": {
+            select: { name: body.currentIncome },
+          },
+        }),
+        ...(body?.targetIncome && {
+          "Target Income": {
+            select: { name: body.targetIncome },
+          },
+        }),
+        ...(body?.budget && {
+          Budget: {
+            select: { name: body.budget },
+          },
+        }),
+        ...(body?.diagnosticAnswers && {
+          "Opinie Google": {
+            checkbox: !!body.diagnosticAnswers["google-reviews"],
+          },
+          "Polecenia": {
+            checkbox: !!body.diagnosticAnswers["referrals"],
+          },
+          "Praca ręczna": {
+            checkbox: !!body.diagnosticAnswers["manual-work"],
+          },
+          "Org. zleceń": {
+            checkbox: !!body.diagnosticAnswers["job-organization"],
+          },
+          "System telefon.": {
+            checkbox: !!body.diagnosticAnswers["phone-system"],
+          },
+          "Świadom. CLV": {
+            checkbox: !!body.diagnosticAnswers["clv-awareness"],
+          },
+          "Świadom. WWW": {
+            checkbox: !!body.diagnosticAnswers["website-awareness"],
+          },
+          "Świadom. AI": {
+            checkbox: !!body.diagnosticAnswers["ai-awareness"],
+          },
+        }),
       },
     });
 

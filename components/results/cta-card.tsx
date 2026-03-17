@@ -8,9 +8,14 @@ interface CtaCardProps {
   phase: PhaseData;
   calendarUrl?: string;
   onSuccess?: () => void;
+  niche?: string;
+  currentIncome?: string;
+  targetIncome?: string;
+  diagnosticAnswers?: Record<string, boolean>;
+  budget?: string;
 }
 
-export function CtaCard({ phase, calendarUrl, onSuccess }: CtaCardProps) {
+export function CtaCard({ phase, calendarUrl, onSuccess, niche, currentIncome, targetIncome, diagnosticAnswers, budget }: CtaCardProps) {
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [companyUrl, setCompanyUrl] = useState("");
@@ -33,7 +38,17 @@ export function CtaCard({ phase, calendarUrl, onSuccess }: CtaCardProps) {
 
     setLoading(true);
     try {
-      const payload = { fullName, companyName, companyUrl, phone, email, phase: phase.id };
+      const payload = {
+        fullName, companyName, companyUrl, phone, email,
+        phase: phase.id,
+        phaseName: phase.name,
+        niche,
+        currentIncome,
+        targetIncome,
+        budget,
+        diagnosticAnswers,
+        submittedAt: new Date().toISOString(),
+      };
       const [mailRes, notionRes] = await Promise.all([
         fetch("/api/mail", {
           method: "POST",
@@ -45,6 +60,11 @@ export function CtaCard({ phase, calendarUrl, onSuccess }: CtaCardProps) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         }),
+        fetch("/api/webhook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }).catch(() => new Response(null, { status: 200 })),
       ]);
 
       if (mailRes.status === 429 || notionRes.status === 429) {
