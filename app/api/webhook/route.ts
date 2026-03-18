@@ -8,7 +8,10 @@ export async function POST(request: Request) {
   try {
     await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(process.env.WEBHOOK_API_KEY && { "x-api-key": process.env.WEBHOOK_API_KEY }),
+      },
       body: JSON.stringify(body),
     });
   } catch {

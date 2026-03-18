@@ -23,6 +23,7 @@ export function CtaCard({ phase, calendarUrl, onSuccess, niche, currentIncome, t
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
@@ -49,30 +50,25 @@ export function CtaCard({ phase, calendarUrl, onSuccess, niche, currentIncome, t
         diagnosticAnswers,
         submittedAt: new Date().toISOString(),
       };
-      const [mailRes, notionRes] = await Promise.all([
-        fetch("/api/mail", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }),
-        fetch("/api/notion", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }),
-        fetch("/api/webhook", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }).catch(() => new Response(null, { status: 200 })),
-      ]);
+      const webhookRes = await fetch("/api/webhook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      if (mailRes.status === 429 || notionRes.status === 429) {
-        toast.error("Zbyt wiele prób. Spróbuj za chwilę.");
-        return;
-      }
+      // fire-and-forget: mail + notion (mogą być nieskonfigurowane)
+      fetch("/api/mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+      fetch("/api/notion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
 
-      if (!mailRes.ok || !notionRes.ok) {
+      if (!webhookRes.ok) {
         toast.error("Coś poszło nie tak. Spróbuj ponownie.");
         return;
       }
@@ -175,17 +171,28 @@ export function CtaCard({ phase, calendarUrl, onSuccess, niche, currentIncome, t
 
           {/* Submit */}
           <div className="space-y-4 pt-2">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={e => setConsent(e.target.checked)}
+                className="mt-1 w-4 h-4 accent-blue-500 cursor-pointer"
+              />
+              <span className="text-xs text-white/40 leading-relaxed">
+                Wyrażam zgodę na przetwarzanie moich danych osobowych przez Dawid Stępień w celu obsługi zgłoszenia, zgodnie z{" "}
+                <a href="/polityka-prywatnosci" target="_blank" className="underline hover:text-white/70">
+                  Polityką prywatności
+                </a>.
+              </span>
+            </label>
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={loading || !consent}
               className="flex items-center gap-3 rounded-full bg-white/8 border border-white/15 hover:bg-white/15 hover:border-white/30 text-white font-semibold px-8 py-4 text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span className="text-lg">✦</span>
               {loading ? "Wysyłam..." : "Wyślij"}
             </button>
-            <p className="text-xs text-white/25 leading-relaxed max-w-sm">
-              Wysyłając formularz, wyrażasz zgodę na kontakt w celu obsługi zgłoszenia.
-            </p>
           </div>
         </>
       ) : (
